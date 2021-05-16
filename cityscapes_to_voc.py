@@ -11,7 +11,7 @@ from shutil import move, copy
 #----------
 #arguments
 #----------
-cityscapes_dir = '/data/Cityscapes/'
+cityscapes_dir = '/data/Cityscapes_raw/'
 save_path = './cityscapes_voc_annotations/'
 
 cityscapes_dir_gt = os.path.join(cityscapes_dir, 'gtFine')
@@ -97,7 +97,15 @@ for category in os.listdir(cityscapes_dir_gt):
     #no GT for test data
     if category == 'test': continue
     
-    for city in os.listdir(os.path.join(cityscapes_dir_gt, category)):
+    if category == 'train':
+        category_code = '1'
+    elif category == 'val':
+        category_code = '2'
+
+    cities = os.listdir(os.path.join(cityscapes_dir_gt, category))
+    cities.sort()
+    for city in cities:
+        city_code = category_code + str(cities.index(city))
 
         #read files
         files = glob.glob(os.path.join(cityscapes_dir, 'gtFine', category, city)+'/*.json')
@@ -108,8 +116,8 @@ for category in os.listdir(cityscapes_dir_gt):
             
             if relevant_file:
                 base_filename = os.path.basename(file)[:-21]
-                xml_filepath = os.path.join(ann_dir,base_filename + '_leftImg8bit.xml')
-                img_name = base_filename+'_leftImg8bit.png'
+                xml_filepath = os.path.join(ann_dir,base_filename.replace(city, city_code) + '.xml')
+                img_name = base_filename.replace(city, city_code)+'.png'
                 img_path = os.path.join(cityscapes_dir, 'leftImg8bit', category, city, base_filename+'_leftImg8bit.png')
                 img_shape = plt.imread(img_path).shape
                 valid_files.append([img_path, img_name])
