@@ -75,7 +75,7 @@ def read_json(file):
 #function to save xml file
 #---------------------------
 def save_xml(img_path, img_shape, data, save_path):
-    writer = Writer(img_path,img_shape[0], img_shape[1])
+    writer = Writer(img_path,img_shape[1], img_shape[0])
     for element in data:
         writer.addObject(element[0],element[1],element[2],element[3],element[4])
     writer.save(save_path)
